@@ -24,8 +24,6 @@ requirements:
     - boto3 >=1.5,<2.0a0
     - jsonschema >=3.2,<4.0a0
     - six >=1.15,<2.0a0
-    - pyrsistent >=0.16.0  # [py2k]
-    - enum34 >=1.1  # [py<34]
 
 test:
   imports:
