@@ -20,7 +20,7 @@ requirements:
     - wheel
   run:
     - python
-    - pydantic ==2.5.3
+    - pydantic >=1.8,<3
     - boto3 >=1.19.5,<2.0a0
     - jsonschema >=3.2,<4.0a0
 
