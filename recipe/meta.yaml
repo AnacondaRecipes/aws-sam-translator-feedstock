@@ -44,6 +44,7 @@ test:
     - pip
   commands:
     - pip check
+    # TODO: Change source to github and add tests
 
 about:
   home: https://github.com/awslabs/serverless-application-model
@@ -61,6 +62,8 @@ about:
 
 extra:
   recipe-maintainers:
+    - jan-janssen
+    - mxr-conda
     - hajapy
     - rluria14
     - oblute
