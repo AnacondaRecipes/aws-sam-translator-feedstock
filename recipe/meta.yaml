@@ -1,12 +1,13 @@
-{% set version = "1.86.0" %}
+{% set name = "aws-sam-translator" %}
+{% set version = "1.97.0" %}
 
 package:
-  name: aws-sam-translator
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/a/aws-sam-translator/aws-sam-translator-{{ version }}.tar.gz
-  sha256: a748dcd7886024cb7586abbbdbabe8c787c44c6547bb6602879d7bb8a6934d05
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz
+  sha256: 6f7ec94de0a9b220dd1f1a0bf7e2df95dd44a85592301ee830744da2f209b7e6
 
 build:
   number: 0
@@ -22,7 +23,7 @@ requirements:
   run:
     - python
     - typing-extensions >=4.4
-    - pydantic >=1.8,<3
+    - pydantic >=1.8,<3,!=1.10.15,!=1.10.17
     - boto3 >=1.19.5,<2.0a0
     - jsonschema >=3.2,<5.0a0
 
@@ -43,6 +44,7 @@ test:
     - pip
   commands:
     - pip check
+    # TODO: Change source to github and add tests
 
 about:
   home: https://github.com/awslabs/serverless-application-model
@@ -51,15 +53,17 @@ about:
   license_file: LICENSE
   summary: AWS Serverless Application Model (AWS SAM) prescribes rules for expressing Serverless applications on AWS.
   description: |
-    You can use SAM to define serverless applications in simple and clean syntax. 
-    This GitHub project is the starting point for AWS SAM. 
-    It contains the SAM specification, the code that translates SAM templates into 
+    You can use SAM to define serverless applications in simple and clean syntax.
+    This GitHub project is the starting point for AWS SAM.
+    It contains the SAM specification, the code that translates SAM templates into
     AWS CloudFormation stacks, general information about the model, and examples of common applications.
   doc_url: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
   dev_url: https://github.com/awslabs/serverless-application-model
 
 extra:
   recipe-maintainers:
+    - jan-janssen
+    - mxr-conda
     - hajapy
     - rluria14
     - oblute
