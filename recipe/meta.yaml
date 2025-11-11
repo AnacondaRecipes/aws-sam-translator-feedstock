@@ -6,8 +6,11 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz
-  sha256: 234c1ca29d47f2cd276858371d4a646bc5cdb0de1e07724721d9358d6de005aa
+  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz
+    sha256: 234c1ca29d47f2cd276858371d4a646bc5cdb0de1e07724721d9358d6de005aa
+  - url: https://github.com/awslabs/serverless-application-model/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 07588b005b2a9f4e79d6f86d9a5f4464f6663e0c64701729897f90c397542a16
+    folder: tests_src
 
 build:
   number: 0
@@ -22,12 +25,21 @@ requirements:
     - wheel
   run:
     - python
-    - typing-extensions >=4.4
+    - boto3 >=1.34.0,<2.0.0
+    - jsonschema >=3.2,<5
+    - typing_extensions >=4.4
     - pydantic >=1.8,<3,!=1.10.15,!=1.10.17
-    - boto3 >=1.19.5,<2.0a0
-    - jsonschema >=3.2,<5.0a0
+
+# E samtranslator.translator.arn_generator.NoRegionFound: AWS Region cannot be found
+{% set skip_test = "--ignore=tests_src/tests/plugins/application/test_serverless_app_plugin.py" %}
+{% set skip_test = skip_test + " --ignore=tests_src/tests/unit/test_region_configuration.py" %}
 
 test:
+  source_files:
+    - tests_src/tests
+    - tests_src/bin
+    - tests_src/schema_source
+    - tests_src/samtranslator
   imports:
     - samtranslator
     - samtranslator.intrinsics
@@ -42,9 +54,13 @@ test:
     - samtranslator.validator
   requires:
     - pip
+    - pytest >=6.2,<8
+    - parameterized >=0.7.0,<0.8.0
+    - pyyaml >=6.0,<7.0
   commands:
     - pip check
-    # TODO: Change source to github and add tests
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v tests_src/tests {{ skip_test }}
 
 about:
   home: https://github.com/awslabs/serverless-application-model
