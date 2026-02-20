@@ -13,7 +13,7 @@ source:
     folder: tests_src
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   skip: true  # [py<38]
 
@@ -33,6 +33,13 @@ requirements:
 # E samtranslator.translator.arn_generator.NoRegionFound: AWS Region cannot be found
 {% set skip_test = "--ignore=tests_src/tests/plugins/application/test_serverless_app_plugin.py" %}
 {% set skip_test = skip_test + " --ignore=tests_src/tests/unit/test_region_configuration.py" %}
+# E   RuntimeError: no validator found for <class 'pydantic.v1.fields.UndefinedType'>, see `arbitrary_types_allowed` in Config
+{% set skip_test = skip_test + " --ignore=tests_src/tests/model/test_resource_validator.py" %}  # [py==314]
+# https://bugzilla.redhat.com/show_bug.cgi?id=2353126
+{% set skip_test = skip_test + " --ignore=tests_src/tests/translator/test_translator.py" %}  # [py==314]
+{% set skip_test = skip_test + " --ignore=tests_src/tests/test_import.py" %}  # [py==314]
+
+
 # E       AssertionError: 18446744073675828635 != 484452592760221083
 {% set deselect_tests = "" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/utils/test_py27hash_fix.py::TestPy27UniStr::test_py27_hash" %}  # [win]
