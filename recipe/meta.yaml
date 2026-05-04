@@ -1,5 +1,5 @@
 {% set name = "aws-sam-translator" %}
-{% set version = "1.101.0" %}
+{% set version = "1.109.0" %}
 
 package:
   name: {{ name }}
@@ -7,13 +7,13 @@ package:
 
 source:
   - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz
-    sha256: 234c1ca29d47f2cd276858371d4a646bc5cdb0de1e07724721d9358d6de005aa
+    sha256: 0c5e60223ae8434ce0c6bdb9a491d69ba3ec97e15c0d825d3803f7806382d804
   - url: https://github.com/awslabs/serverless-application-model/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 07588b005b2a9f4e79d6f86d9a5f4464f6663e0c64701729897f90c397542a16
+    sha256: b24f2cc21675af48e8a949b098734de77d7dfbd092faf57951940a7dba76a14c
     folder: tests_src
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   skip: true  # [py<38]
 
@@ -28,7 +28,7 @@ requirements:
     - boto3 >=1.34.0,<2.0.0
     - jsonschema >=3.2,<5
     - typing_extensions >=4.4
-    - pydantic >=1.8,<3,!=1.10.15,!=1.10.17
+    - pydantic >=2.12.5,<2.13.0
 
 # E samtranslator.translator.arn_generator.NoRegionFound: AWS Region cannot be found
 {% set skip_test = "--ignore=tests_src/tests/plugins/application/test_serverless_app_plugin.py" %}
@@ -40,9 +40,33 @@ requirements:
 {% set skip_test = skip_test + " --ignore=tests_src/tests/test_import.py" %}  # [py==314]
 
 
-# E       AssertionError: 18446744073675828635 != 484452592760221083
 {% set deselect_tests = "" %}
+# E       TypeError: TestCloudFormationSchemaGenerator.test_schema_generation() takes 0 positional arguments but 1 was given
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/schema/test_cfn_schema_generator.py::TestCloudFormationSchemaGenerator::test_schema_generation" %}
+# RuntimeError: Capacity Provider functionalities are temporarily not supported when running SAM in Python 3.14
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/model/test_sam_resources.py::TestSamCapacityProvider::test_basic_capacity_provider_without_propagate_tags" %}  # [py==314]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/model/test_sam_resources.py::TestSamCapacityProvider::test_capacity_provider_with_propagate_tags" %}  # [py==314]
+# E       AssertionError: 18446744073675828635 != 484452592760221083
 {% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/utils/test_py27hash_fix.py::TestPy27UniStr::test_py27_hash" %}  # [win]
+# Api calls fail
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0852_function_with_events_and_propagate_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0853_function_with_events_and_propagate_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0854_function_with_events_and_propagate_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0978_function_with_propagate_tags_and_no_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0979_function_with_propagate_tags_and_no_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_0980_function_with_propagate_tags_and_no_tags" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1191_implicit_and_explicit_api_with_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1192_implicit_and_explicit_api_with_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1193_implicit_and_explicit_api_with_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1203_implicit_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1204_implicit_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1205_implicit_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1218_implicit_http_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1219_implicit_http_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_1220_implicit_http_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_openapi3_084_implicit_http_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_openapi3_085_implicit_http_api_with_many_conditions" %}  # [win]
+{% set deselect_tests = deselect_tests + " --deselect=tests_src/tests/translator/test_translator.py::TestTranslatorEndToEnd::test_transform_success_openapi3_086_implicit_http_api_with_many_conditions" %}  # [win]
 
 test:
   source_files:
@@ -67,6 +91,7 @@ test:
     - pytest >=6.2,<8
     - parameterized >=0.7.0,<0.8.0
     - pyyaml >=6.0,<7.0
+    - requests
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
