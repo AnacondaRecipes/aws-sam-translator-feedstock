@@ -1,5 +1,5 @@
 {% set name = "aws-sam-translator" %}
-{% set version = "1.111.0" %}
+{% set version = "1.115.0" %}
 
 package:
   name: {{ name }}
@@ -7,9 +7,9 @@ package:
 
 source:
   - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz
-    sha256: 6884d94e28dc20384e5e0396e9386a456fe59303d706924deb2646329b4d97d3
+    sha256: 9766852bd212baa94f240b0b98b82ab1ed5857034bcc87cce5bfc782043d9902
   - url: https://github.com/awslabs/serverless-application-model/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 3c99b306dae4c6ad290a1d87ad0716d354e51203967f137379cd3b5a9ae8ddd8
+    sha256: 38715956f5533df3257fa16988eed8a9c1bd74593121fd7bad60e23f6688fb1f
     folder: tests_src
 
 build:
